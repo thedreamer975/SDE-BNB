@@ -1,11 +1,14 @@
 import pytest
 from collections.abc import Generator
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, event
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import StaticPool
 from app.db import Base, get_db
 from app.main import create_app
+
+# Import all models so Base.metadata knows about them
+import app.models  # noqa: F401
 
 
 @pytest.fixture(scope="session")
@@ -16,6 +19,14 @@ def test_engine():
         connect_args={"check_same_thread": False},
         poolclass=StaticPool,
     )
+
+    # Enable foreign keys on every connection (mirrors production pragmas)
+    @event.listens_for(engine, "connect")
+    def set_sqlite_pragma(dbapi_connection, connection_record):
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA foreign_keys=ON;")
+        cursor.close()
+
     yield engine
     engine.dispose()
 

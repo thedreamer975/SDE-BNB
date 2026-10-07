@@ -8,7 +8,24 @@ from app.config import get_settings
 from app.errors import register_exception_handlers
 from app.routers.health import router as health_router
 
+from contextlib import asynccontextmanager
+from app.db import init_db
+from seed.seed import seed_database
+
 settings = get_settings()
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Auto-initialize tables and seed if database is empty (PRD §17 / §18)
+    if not settings.DATABASE_URL.startswith("sqlite:///:memory:"):
+        init_db()
+        try:
+            seed_database(reset=False)
+        except Exception as e:
+            # Avoid crashing if seed was already run concurrently
+            pass
+    yield
 
 
 def create_app() -> FastAPI:
@@ -22,6 +39,7 @@ def create_app() -> FastAPI:
         docs_url="/docs",
         redoc_url="/redoc",
         openapi_url="/openapi.json",
+        lifespan=lifespan,
     )
 
     # Security & Request ID middleware

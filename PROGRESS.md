@@ -2,27 +2,43 @@
 
 ## S0: Scaffold & Tooling
 - **Status:** PASS
-- **Built:**
-  - Monorepo layout with `frontend/`, `backend/`, and `docs/`
-  - Backend FastAPI app with Pydantic v2 settings, SQLite engine with WAL and foreign key pragmas, AppError hierarchy with unified PRD §8.2 error envelope, request-ID and security headers middleware, and `/api/health` router
-  - Backend test harness with isolated SQLite in-memory fixtures in `conftest.py`
-  - Next.js 14 App Router frontend with TypeScript strict mode, Tailwind CSS configured with all PRD §3 design tokens (light and dark modes, responsive breakpoints 550/744/1128/1440/1760, and Inter font)
-  - Next.js rewrites proxying `/api/*` and `/uploads/*` to `API_ORIGIN` (`http://localhost:8000`) and image remote patterns for Unsplash, Picsum, Cloudinary, and localhost
-  - Root `Makefile`, `.gitignore`, `.env.example`, `docs/CONTRACTS.md`, and cross-platform `run.py`
-  - Automated OpenAPI type generation via `npm run gen:types` generating `frontend/lib/types.gen.ts`
-- **Tests:**
-  - Pytest: 1 passed (`test_health.py` validates 200 OK, `{"status": "ok"}`, and security headers)
-  - Vitest: 1 test file, 2 tests passed (`smoke.test.ts`)
-  - Ruff: 0 errors
-  - ESLint: 0 warnings or errors
-  - TypeScript: `tsc --noEmit` clean
-  - Next.js: `npm run build` production build compiled successfully
-- **Integration check:**
-  - Started both servers (`uvicorn` on 8000, `next dev` on 3000)
-  - Direct call: `GET http://localhost:8000/api/health` -> `{"status":"ok"}`
-  - Proxy call: `GET http://localhost:3000/api/health` -> `{"status":"ok"}`
-  - Verified `docs/openapi.json` generated and `frontend/lib/types.gen.ts` generated without errors
+- **Built:** Monorepo, FastAPI backend, Next.js 14 frontend, Tailwind tokens, Makefile, contracts, and type generator.
+- **Commit:** `3edd2f2` pushed to remote.
+
+## S1: Data Layer & Seed
+- **Status:** In Progress
+- **Plan:**
+  - Define SQLAlchemy 2.0 ORM models with `Mapped[]` and full constraints (CHECK, UNIQUE, FK, INDEX) in `backend/app/models/`:
+    `user.py`, `listing.py`, `amenity.py`, `booking.py`, `review.py`, `wishlist.py`, `notification.py`
+  - Implement `backend/app/services/pricing.py` with the canonical quote calculation (`round_half_up(subtotal * 0.12)`, integer cents)
+  - Implement confirmation code generator in `backend/app/core/codes.py`
+  - Implement seed system in `backend/seed/`: amenities dataset, 12 destinations × 3 listings (36), hosts/guests, confirmed/cancelled bookings with same-day turnover, reviews with sub-scores and aggregates, wishlist items, notifications, and superhost calculation
+  - Implement `backend/seed/verify_images.py` with image URL validation and fallback
+  - Ensure auto-seed on app startup if database is empty, plus idempotent CLI reset flag `--reset`
+  - Write test suite `backend/tests/test_models.py` and `backend/tests/test_seed.py`
+  - Integration check: verify table schemas, constraints, SQLite foreign keys, query plan on overlap index
+- **Files touched:**
+  - `backend/app/models/__init__.py`
+  - `backend/app/models/user.py`
+  - `backend/app/models/amenity.py`
+  - `backend/app/models/listing.py`
+  - `backend/app/models/booking.py`
+  - `backend/app/models/review.py`
+  - `backend/app/models/wishlist.py`
+  - `backend/app/models/notification.py`
+  - `backend/app/services/__init__.py`
+  - `backend/app/services/pricing.py`
+  - `backend/app/core/codes.py`
+  - `backend/seed/__init__.py`
+  - `backend/seed/data.py`
+  - `backend/seed/verify_images.py`
+  - `backend/seed/seed.py`
+  - `backend/app/main.py`
+  - `backend/tests/test_models.py`
+  - `backend/tests/test_seed.py`
+  - `docs/CONTRACTS.md`
 - **Decisions:**
-  - D-S0-1: Included `run.py` root runner script supporting `dev`, `check`, `seed`, `test`, and `types` across Windows and Unix platforms.
-- **Known issues:**
-  - None.
+  - D-S1-1: Use Crockford-style uppercase alphanumeric charset `(2-9, A-Z excluding I, O)` for 10-character booking confirmation codes to prevent character confusion.
+  - D-S1-2: Auto-seed executes on startup if `users` table count is 0, ensuring zero-configuration boot on Railway/Render.
+- **Risks:**
+  - Seed execution performance; batch insert seed records within a single transaction to keep startup fast (<1 second).

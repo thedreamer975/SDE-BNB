@@ -33,6 +33,14 @@ class Base(DeclarativeBase):
     pass
 
 
+def init_db(target_engine=None) -> None:
+    # Ensure all models are imported before creating tables
+    import app.models  # noqa: F401
+
+    e = target_engine or engine
+    Base.metadata.create_all(bind=e)
+
+
 def get_db() -> Generator[Session, None, None]:
     db = SessionLocal()
     try:
