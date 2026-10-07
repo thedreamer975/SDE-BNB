@@ -45,6 +45,9 @@ def db_session(test_engine) -> Generator[Session, None, None]:
 
 @pytest.fixture(scope="function")
 def client(db_session: Session) -> Generator[TestClient, None, None]:
+    from app.core.limiter import limiter
+    limiter.reset()
+
     app = create_app()
 
     def override_get_db():
@@ -57,3 +60,4 @@ def client(db_session: Session) -> Generator[TestClient, None, None]:
     with TestClient(app) as test_client:
         yield test_client
     app.dependency_overrides.clear()
+    limiter.reset()

@@ -2,6 +2,7 @@ from typing import Any
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from slowapi.errors import RateLimitExceeded
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 
@@ -96,6 +97,14 @@ def make_error_response(code: str, message: str, status_code: int, fields: dict[
 
 
 def register_exception_handlers(app: FastAPI) -> None:
+    @app.exception_handler(RateLimitExceeded)
+    async def rate_limit_handler(request: Request, exc: RateLimitExceeded):
+        return make_error_response(
+            code="RATE_LIMITED",
+            message="Too many attempts. Try again in a minute.",
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+        )
+
     @app.exception_handler(AppError)
     async def app_error_handler(request: Request, exc: AppError):
         return make_error_response(exc.code, exc.message, exc.status_code, exc.fields)

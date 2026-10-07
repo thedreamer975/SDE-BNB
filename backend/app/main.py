@@ -1,18 +1,24 @@
 import uuid
+from contextlib import asynccontextmanager
 from pathlib import Path
 from fastapi import FastAPI, Request, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
-from app.config import get_settings
-from app.errors import register_exception_handlers
-from app.routers.health import router as health_router
+from slowapi.middleware import SlowAPIMiddleware
 
-from contextlib import asynccontextmanager
+from app.config import get_settings
+from app.core.limiter import limiter
 from app.db import init_db
+from app.errors import register_exception_handlers
+from app.routers.auth import router as auth_router
+from app.routers.health import router as health_router
+from app.routers.users import router as users_router
 from seed.seed import seed_database
 
 settings = get_settings()
+
+DEFAULT_JWT_SECRET = "supersecretjwtkeyforairbnbcloneproductionmustbe32charsorlonger!"
 
 
 @asynccontextmanager
@@ -22,16 +28,23 @@ async def lifespan(app: FastAPI):
         init_db()
         try:
             seed_database(reset=False)
-        except Exception as e:
+        except Exception:
             # Avoid crashing if seed was already run concurrently
             pass
     yield
 
 
 def create_app() -> FastAPI:
-    # Production guard: check JWT secret
-    if settings.ENV == "production" and len(settings.JWT_SECRET) < 32:
-        raise RuntimeError("Production environment requires a JWT_SECRET of at least 32 characters")
+    # Production guard: refuse to boot with default or short JWT_SECRET (PRD §11)
+    if settings.ENV == "production":
+        if (
+            len(settings.JWT_SECRET) < 32
+            or settings.JWT_SECRET == DEFAULT_JWT_SECRET
+            or "changeme" in settings.JWT_SECRET.lower()
+        ):
+            raise RuntimeError(
+                "Production environment requires a secure, non-default JWT_SECRET of at least 32 characters."
+            )
 
     app = FastAPI(
         title="Airbnb Clone API",
@@ -42,6 +55,10 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
 
+    # Attach slowapi state
+    app.state.limiter = limiter
+    app.add_middleware(SlowAPIMiddleware)
+
     # Security & Request ID middleware
     @app.middleware("http")
     async def request_id_and_security_headers_middleware(request: Request, call_next):
@@ -49,12 +66,12 @@ def create_app() -> FastAPI:
         request.state.request_id = req_id
 
         # Content-type guard for mutations (PRD §7 / §8.5)
-        # Mutations must be JSON or multipart (for uploads)
+        # Mutations must be JSON (or multipart for uploads)
         if request.method in ("POST", "PUT", "PATCH") and not request.url.path.startswith("/api/uploads"):
             content_type = request.headers.get("content-type", "")
-            # Only validate if there is a body expected
             content_length = request.headers.get("content-length", "0")
-            if content_length != "0" and not content_type.startswith("application/json") and not request.url.path.endswith("/logout"):
+            has_body = content_length != "0" or "transfer-encoding" in request.headers
+            if has_body and not content_type.startswith("application/json") and not request.url.path.endswith("/logout"):
                 return JSONResponse(
                     status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
                     content={
@@ -94,6 +111,8 @@ def create_app() -> FastAPI:
 
     # Include routers under /api
     app.include_router(health_router, prefix="/api")
+    app.include_router(auth_router, prefix="/api")
+    app.include_router(users_router, prefix="/api")
 
     return app
 

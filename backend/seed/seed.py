@@ -1,3 +1,4 @@
+# ruff: noqa: E402
 import argparse
 import random
 import sys
@@ -35,7 +36,6 @@ from seed.data import (
     REVIEW_COMMENTS_HIGH,
     REVIEW_COMMENTS_MID,
 )
-from seed.verify_images import get_fallback_image
 
 
 def seed_database(reset: bool = False) -> None:
@@ -513,20 +513,20 @@ def seed_database(reset: bool = False) -> None:
 
         # Add more upcoming bookings across listings
         for idx in range(6, 18):
-            l = listings[idx]
+            target_listing = listings[idx]
             u_in = today_date + timedelta(days=random.randint(5, 60))
             u_out = u_in + timedelta(days=random.randint(2, 5))
             u_quote = calculate_quote(
-                l.id,
+                target_listing.id,
                 format_date(u_in),
                 format_date(u_out),
-                l.price_cents,
-                l.cleaning_fee_cents,
+                target_listing.price_cents,
+                target_listing.cleaning_fee_cents,
             )
             g = reviewers[idx % len(reviewers)]
             b_item = Booking(
                 code=generate_confirmation_code(),
-                listing_id=l.id,
+                listing_id=target_listing.id,
                 guest_id=g.id,
                 check_in=u_quote["check_in"],
                 check_out=u_quote["check_out"],
@@ -541,8 +541,8 @@ def seed_database(reset: bool = False) -> None:
                 payment_status="paid",
                 payment_brand="amex",
                 payment_last4="1005",
-                listing_title_snapshot=l.title,
-                listing_cover_snapshot=l.photos[0].url if l.photos else None,
+                listing_title_snapshot=target_listing.title,
+                listing_cover_snapshot=target_listing.photos[0].url if target_listing.photos else None,
             )
             db.add(b_item)
             all_bookings.append(b_item)
@@ -603,7 +603,7 @@ def seed_database(reset: bool = False) -> None:
 
         db.commit()
 
-        print(f"Database successfully seeded!")
+        print("Database successfully seeded!")
         print(f"Total Listings: {len(listings)}")
         print(f"Total Bookings: {len(all_bookings)}")
         print(f"Total Reviews: {len(all_reviews)}")

@@ -63,11 +63,11 @@ def test_seed_listing_ratings():
         listings = db.scalars(select(Listing)).all()
         assert len(listings) == 36
 
-        top_rated = [l for l in listings if l.rating_avg >= 4.8 and l.rating_count >= 3]
+        top_rated = [listing for listing in listings if listing.rating_avg >= 4.8 and listing.rating_count >= 3]
         # PRD requirement: >= 10 listings with rating >= 4.8
         assert len(top_rated) >= 10
 
-        new_listings = [l for l in listings if l.rating_count == 0]
+        new_listings = [listing for listing in listings if listing.rating_count == 0]
         # PRD requirement: 3 listings with 0 reviews ("New")
         assert len(new_listings) == 3
 

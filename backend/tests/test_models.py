@@ -40,7 +40,7 @@ def test_reject_negative_price(db_session: Session):
     db_session.add(host)
     db_session.commit()
 
-    l = Listing(
+    listing = Listing(
         host_id=host.id,
         title="Invalid Price Listing",
         description="A great place with invalid price",
@@ -58,7 +58,7 @@ def test_reject_negative_price(db_session: Session):
         beds=2,
         baths=1.5,
     )
-    db_session.add(l)
+    db_session.add(listing)
     with pytest.raises(IntegrityError):
         db_session.commit()
     db_session.rollback()
@@ -70,7 +70,7 @@ def test_reject_checkout_before_checkin(db_session: Session):
     db_session.add_all([host, guest])
     db_session.commit()
 
-    l = Listing(
+    listing = Listing(
         host_id=host.id,
         title="Listing 1",
         description="Valid description here",
@@ -88,13 +88,13 @@ def test_reject_checkout_before_checkin(db_session: Session):
         beds=2,
         baths=1.0,
     )
-    db_session.add(l)
+    db_session.add(listing)
     db_session.commit()
 
     # Invalid: check_out <= check_in
     b = Booking(
         code=generate_confirmation_code(),
-        listing_id=l.id,
+        listing_id=listing.id,
         guest_id=guest.id,
         check_in="2026-11-10",
         check_out="2026-11-05",  # earlier than check_in!
@@ -120,7 +120,7 @@ def test_reject_total_math_mismatch(db_session: Session):
     db_session.add_all([host, guest])
     db_session.commit()
 
-    l = Listing(
+    listing = Listing(
         host_id=host.id,
         title="Listing 2",
         description="Valid description here",
@@ -138,13 +138,13 @@ def test_reject_total_math_mismatch(db_session: Session):
         beds=2,
         baths=1.0,
     )
-    db_session.add(l)
+    db_session.add(listing)
     db_session.commit()
 
     # total_cents does not equal subtotal + cleaning + service
     b = Booking(
         code=generate_confirmation_code(),
-        listing_id=l.id,
+        listing_id=listing.id,
         guest_id=guest.id,
         check_in="2026-11-01",
         check_out="2026-11-04",
@@ -170,7 +170,7 @@ def test_reject_bad_review_rating(db_session: Session):
     db_session.add_all([host, guest])
     db_session.commit()
 
-    l = Listing(
+    listing = Listing(
         host_id=host.id,
         title="Listing 3",
         description="Valid description here",
@@ -188,12 +188,12 @@ def test_reject_bad_review_rating(db_session: Session):
         beds=2,
         baths=1.0,
     )
-    db_session.add(l)
+    db_session.add(listing)
     db_session.commit()
 
     b = Booking(
         code=generate_confirmation_code(),
-        listing_id=l.id,
+        listing_id=listing.id,
         guest_id=guest.id,
         check_in="2026-09-01",
         check_out="2026-09-04",
@@ -213,7 +213,7 @@ def test_reject_bad_review_rating(db_session: Session):
     # Sub-score of 6 is invalid (CHECK between 1 and 5)
     r = Review(
         booking_id=b.id,
-        listing_id=l.id,
+        listing_id=listing.id,
         author_id=guest.id,
         cleanliness=6,  # Invalid!
         accuracy=5,

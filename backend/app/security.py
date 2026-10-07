@@ -1,4 +1,4 @@
-import time
+import uuid
 import bcrypt
 import jwt
 from datetime import datetime, timedelta, timezone
@@ -33,15 +33,38 @@ def verify_password_constant_time(plain_password: str, hashed_password: str | No
     return verify_password(plain_password, hashed_password)
 
 
+def validate_password_policy(password: str) -> None:
+    """
+    Validate password according to PRD §7 policy:
+    - >= 8 chars
+    - <= 128 chars
+    - >= 1 letter
+    - >= 1 digit
+    """
+    if len(password) < 8:
+        raise ValueError("Password must be at least 8 characters long.")
+    if len(password) > 128:
+        raise ValueError("Password must not exceed 128 characters.")
+    if not any(c.isalpha() for c in password):
+        raise ValueError("Password must contain at least one letter.")
+    if not any(c.isdigit() for c in password):
+        raise ValueError("Password must contain at least one number.")
+
+
 def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
-    """Create HS256 JWT token with 7-day expiration per PRD §7."""
+    """Create HS256 JWT token with 7-day expiration and unique jti per PRD §7."""
     to_encode = data.copy()
     now = datetime.now(timezone.utc)
     if expires_delta:
         expire = now + expires_delta
     else:
         expire = now + timedelta(days=7)
-    to_encode.update({"iat": now, "exp": expire})
+
+    to_encode.update({
+        "iat": now,
+        "exp": expire,
+        "jti": str(uuid.uuid4()),
+    })
     encoded_jwt = jwt.encode(to_encode, settings.JWT_SECRET, algorithm="HS256")
     return encoded_jwt
 
