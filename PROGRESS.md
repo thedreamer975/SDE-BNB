@@ -1,4 +1,4 @@
-# Progress Log — Airbnb Clone
+﻿# Progress Log â€” Airbnb Clone
 
 ## S0: Scaffold & Tooling
 - **Status:** PASS
@@ -34,7 +34,7 @@
   - Vitest: 2 passed
   - Lint: Ruff clean (0 errors), ESLint clean (0 errors), `tsc --noEmit` clean
 - **Integration Check:**
-  - Automated manual-flow script executed: register → /me → become-host → /me (role=host) → logout → /me (401 UNAUTHENTICATED).
+  - Automated manual-flow script executed: register â†’ /me â†’ become-host â†’ /me (role=host) â†’ logout â†’ /me (401 UNAUTHENTICATED).
   - Confirmed `Set-Cookie` contains `session=...; HttpOnly; Max-Age=604800; Path=/; SameSite=lax`.
   - Confirmed seeded demo accounts login with correct roles: `guest@demo.com` (guest) and `host@demo.com` (host).
 - **Fit with previous segments:**
@@ -45,7 +45,7 @@
 - **Decisions:**
   - D-S2-1: `POST /api/auth/logout` returns 204 No Content and clears the `session` cookie.
   - D-S2-2: `POST /api/auth/register` and `POST /api/auth/login` return 201/200 respectively with the authenticated user object in addition to setting the `session` cookie.
-  - D-S2-3: Duplicate email during registration raises 409 Conflict with field error on `email` per PRD §6.7 & §8.2.
+  - D-S2-3: Duplicate email during registration raises 409 Conflict with field error on `email` per PRD Â§6.7 & Â§8.2.
   - D-S2-4: Regex email validation applied in Pydantic schema avoiding additional unpinned dependencies.
 - **Known issues:** None.
 
@@ -74,9 +74,44 @@
 - **Fit with previous segments:**
   - Consumed S1 `Listing`, `ListingPhoto`, `Amenity`, `Booking`, `Review`, `WishlistItem` models and S2 `get_current_user_optional` and `get_current_user` auth dependencies.
 - **Fit with next segments:**
-  - Documented URL ⇄ API parameter mapping table in `docs/CONTRACTS.md` for S5 (Explore UI).
+  - Documented URL â‡„ API parameter mapping table in `docs/CONTRACTS.md` for S5 (Explore UI).
   - Exported all catalog endpoints and regenerated types in `frontend/lib/types.gen.ts`.
 - **Decisions:**
-  - D-S3-1: Search suggestion returns top 6 matching destinations plus static "Anywhere" and "Nearby" entry points per PRD §8.3.
-  - D-S3-2: Date filtering requires both `check_in` and `check_out` or neither; providing only one returns 422 with validation error per PRD §10.5.
+  - D-S3-1: Search suggestion returns top 6 matching destinations plus static "Anywhere" and "Nearby" entry points per PRD Â§8.3.
+  - D-S3-2: Date filtering requires both `check_in` and `check_out` or neither; providing only one returns 422 with validation error per PRD Â§10.5.
+- **Known issues:** None.
+
+## S4: Frontend Foundation — Shell, Design System, Auth UI
+- **Status:** PASS
+- **Built:**
+  - `frontend/lib/api.ts`: Full typed API client for all backend endpoints with `ApiError` class (status, code, field_errors, request_id)
+  - `frontend/lib/format.ts`: Centralized money (cents?USD), date, rating formatters per PRD D2
+  - `frontend/lib/auth-context.tsx`: React context with `AuthProvider` providing `user`, `loading`, `refresh`, `setUser`, `logout`
+  - `frontend/lib/toast-context.tsx`: Global dark snackbar system with 4s auto-dismiss, error/success/default types, action links
+  - `frontend/middleware.ts`: Route protection (protected paths ? `/login?next=…`; auth-only paths redirect logged-in users to `/`)
+  - `frontend/components/ui/Button.tsx`: All PRD variants (primary, brand/gradient, secondary, tertiary, ghost)
+  - `frontend/components/ui/Input.tsx`: Accessible labeled input with error state, show/hide password toggle
+  - `frontend/components/layout/Header.tsx`: Sticky header with custom Logo SVG, collapsed/expanded search pill, avatar menu (role-aware)
+  - `frontend/components/layout/Footer.tsx`: 3-column link layout + copyright bar
+  - `frontend/app/layout.tsx`: Root layout with `AuthProvider` + `ToastProvider`, Inter font
+  - `frontend/app/(auth)/login/page.tsx`: Login form, server error mapping (401?generic, 429?rate limit), `?next` redirect
+  - `frontend/app/(auth)/signup/page.tsx`: Signup with password strength hints, 409 duplicate email ? inline error per PRD D-S2-3
+  - `frontend/app/become-a-host/page.tsx`: 3-step explainer ? `POST /become-host`
+  - `frontend/app/coming-soon/[slug]/page.tsx`, `app/not-found.tsx`, `app/page.tsx` (shell)
+- **Tests:** Pytest 46 passed, Vitest 2 passed, Ruff/ESLint/tsc all clean
+- **Commit:** `7745f2d` pushed to remote.
+
+## S5: Search/Explore UI (Listings Grid & Filters)
+- **Status:** PASS
+- **Built:**
+  - `components/explore/CategoryBar.tsx`: Horizontally scrollable category list, active state styling, "Filters" trigger button.
+  - `components/explore/ListingCard.tsx`: Grid item with heart wishlist toggle, guest-favorite badge, and `PhotoCarousel`.
+  - `components/explore/ListingCardSkeleton.tsx`: Flat surface placeholder for loading states.
+  - `components/ui/Modal.tsx`: Reusable accessible modal dialog using `<dialog>`.
+  - `components/explore/FilterModal.tsx`: Comprehensive filter form with debounced `/listings/count` check.
+  - `components/explore/ListingGrid.tsx`: Infinite scrolling grid mapped to `swr/infinite`.
+  - `components/explore/ExploreContainer.tsx`: Client orchestrator bridging URL searchParams.
+  - `app/page.tsx`: Replaced stub with `<ExploreContainer />` inside a `<Suspense>` boundary.
+- **Tests:** Pytest 46 passed, Vitest 2 passed, ESLint and TSC clean.
+- **Fit with next segments:** S6 (Bookings / Rooms) will take over when a user clicks on a `ListingCard`.
 - **Known issues:** None.
