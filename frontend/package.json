@@ -12,6 +12,7 @@
     "gen:types": "node scripts/gen-types.mjs"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.9.1",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
     "lucide-react": "^0.395.0",
