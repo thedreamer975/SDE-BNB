@@ -21,6 +21,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/meta": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get System Metadata
+         * @description Return application metadata, system limits, and taxonomy per PRD §8.3.
+         *     Client never calculates its own 'today' for business rules.
+         */
+        get: operations["get_system_metadata_api_meta_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/auth/register": {
         parameters: {
             query?: never;
@@ -141,10 +162,257 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/search/suggestions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Search Suggestions
+         * @description Return destination suggestions matching q (prefix/substring on city or country),
+         *     plus static Anywhere and Nearby options per PRD §8.3.
+         */
+        get: operations["get_search_suggestions_api_search_suggestions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/listings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Listings
+         * @description Search and filter catalog listings with pagination and saved state.
+         */
+        get: operations["get_listings_api_listings_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/listings/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Listings Count
+         * @description Return total count of listings matching filters for filter dialog live preview.
+         */
+        get: operations["get_listings_count_api_listings_count_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/listings/facets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Facets
+         * @description Return price facets and 20-bucket histogram for current filters.
+         */
+        get: operations["get_facets_api_listings_facets_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/listings/{listing_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Listing Detail
+         * @description Return full listing details, photos, amenities, host summary, and saved state.
+         */
+        get: operations["get_listing_detail_api_listings__listing_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/listings/{listing_id}/availability": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Availability
+         * @description Return booked date ranges and constraints for availability calendar.
+         */
+        get: operations["get_availability_api_listings__listing_id__availability_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/listings/{listing_id}/reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Listing Reviews
+         * @description Return paginated reviews and aggregate categories breakdown for a listing.
+         */
+        get: operations["get_listing_reviews_api_listings__listing_id__reviews_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/wishlist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Wishlist
+         * @description Retrieve all saved listing cards for authenticated user.
+         */
+        get: operations["get_wishlist_api_wishlist_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/wishlist/ids": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Wishlist Ids
+         * @description Retrieve saved listing IDs array for fast heart hydration.
+         */
+        get: operations["get_wishlist_ids_api_wishlist_ids_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/wishlist/{listing_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Save Wishlist Item
+         * @description Idempotently save a listing to user's wishlist.
+         */
+        put: operations["save_wishlist_item_api_wishlist__listing_id__put"];
+        post?: never;
+        /**
+         * Delete Wishlist Item
+         * @description Idempotently remove a listing from user's wishlist.
+         */
+        delete: operations["delete_wishlist_item_api_wishlist__listing_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AmenityItem */
+        AmenityItem: {
+            /** Id */
+            id: number;
+            /** Name */
+            name: string;
+            /** Icon Key */
+            icon_key: string;
+            /** Group */
+            group: string;
+        };
+        /** AvailabilityResponse */
+        AvailabilityResponse: {
+            /** Booked */
+            booked: components["schemas"]["BookedRange"][];
+            /** Min Nights */
+            min_nights: number;
+            /** Max Nights */
+            max_nights: number;
+            /** Max Advance Days */
+            max_advance_days: number;
+        };
+        /** BookedRange */
+        BookedRange: {
+            /** Check In */
+            check_in: string;
+            /** Check Out */
+            check_out: string;
+        };
+        /** DestinationSuggestion */
+        DestinationSuggestion: {
+            /** Label */
+            label: string;
+            /** City */
+            city?: string | null;
+            /** Country */
+            country?: string | null;
+            /** Lat */
+            lat?: number | null;
+            /** Lng */
+            lng?: number | null;
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
@@ -155,12 +423,258 @@ export interface components {
             /** Status */
             status: string;
         };
+        /** HistogramBucket */
+        HistogramBucket: {
+            /** From */
+            from: number;
+            /** To */
+            to: number;
+            /** Count */
+            count: number;
+        };
+        /** HostSummary */
+        HostSummary: {
+            /** Id */
+            id: number;
+            /** Name */
+            name: string;
+            /** Avatar Url */
+            avatar_url?: string | null;
+            /**
+             * Is Superhost
+             * @default false
+             */
+            is_superhost: boolean;
+            /** Joined Year */
+            joined_year: number;
+            /** Listing Count */
+            listing_count: number;
+        };
+        /** ListingCardResponse */
+        ListingCardResponse: {
+            /** Id */
+            id: number;
+            /** Title */
+            title: string;
+            /** Category */
+            category: string;
+            /** Property Type */
+            property_type: string;
+            /** Room Type */
+            room_type: string;
+            /** City */
+            city: string;
+            /** Country */
+            country: string;
+            /** Latitude */
+            latitude: number;
+            /** Longitude */
+            longitude: number;
+            /** Price Cents */
+            price_cents: number;
+            /** Cleaning Fee Cents */
+            cleaning_fee_cents: number;
+            /** Max Guests */
+            max_guests: number;
+            /** Bedrooms */
+            bedrooms: number;
+            /** Beds */
+            beds: number;
+            /** Baths */
+            baths: number;
+            /** Pets Allowed */
+            pets_allowed: boolean;
+            /** Rating Avg */
+            rating_avg: number;
+            /** Rating Count */
+            rating_count: number;
+            /**
+             * Is Superhost
+             * @default false
+             */
+            is_superhost: boolean;
+            /**
+             * Guest Favorite
+             * @default false
+             */
+            guest_favorite: boolean;
+            /** Photos */
+            photos: components["schemas"]["PhotoItem"][];
+            /**
+             * Saved
+             * @default false
+             */
+            saved: boolean;
+        };
+        /** ListingCountResponse */
+        ListingCountResponse: {
+            /** Total */
+            total: number;
+        };
+        /** ListingDetailResponse */
+        ListingDetailResponse: {
+            /** Id */
+            id: number;
+            /** Title */
+            title: string;
+            /** Description */
+            description: string;
+            /** Category */
+            category: string;
+            /** Property Type */
+            property_type: string;
+            /** Room Type */
+            room_type: string;
+            /** Address Line */
+            address_line: string;
+            /** City */
+            city: string;
+            /** Country */
+            country: string;
+            /** Latitude */
+            latitude: number;
+            /** Longitude */
+            longitude: number;
+            /** Price Cents */
+            price_cents: number;
+            /** Cleaning Fee Cents */
+            cleaning_fee_cents: number;
+            /** Max Guests */
+            max_guests: number;
+            /** Bedrooms */
+            bedrooms: number;
+            /** Beds */
+            beds: number;
+            /** Baths */
+            baths: number;
+            /** Pets Allowed */
+            pets_allowed: boolean;
+            /** Check In Time */
+            check_in_time: string;
+            /** Check Out Time */
+            check_out_time: string;
+            /** Min Nights */
+            min_nights: number;
+            /** Max Nights */
+            max_nights: number;
+            /** House Rules */
+            house_rules?: string | null;
+            /** Rating Avg */
+            rating_avg: number;
+            /** Rating Count */
+            rating_count: number;
+            /**
+             * Guest Favorite
+             * @default false
+             */
+            guest_favorite: boolean;
+            host: components["schemas"]["HostSummary"];
+            /** Photos */
+            photos: components["schemas"]["PhotoItem"][];
+            /** Amenities */
+            amenities: components["schemas"]["AmenityItem"][];
+            /**
+             * Saved
+             * @default false
+             */
+            saved: boolean;
+        };
+        /** ListingFacetsResponse */
+        ListingFacetsResponse: {
+            /** Price Min */
+            price_min: number;
+            /** Price Max */
+            price_max: number;
+            /** Histogram */
+            histogram: components["schemas"]["HistogramBucket"][];
+        };
+        /** ListingListResponse */
+        ListingListResponse: {
+            /** Items */
+            items: components["schemas"]["ListingCardResponse"][];
+            /** Total */
+            total: number;
+            /** Page */
+            page: number;
+            /** Page Size */
+            page_size: number;
+            /** Has More */
+            has_more: boolean;
+        };
         /** LoginRequest */
         LoginRequest: {
             /** Email */
             email: string;
             /** Password */
             password: string;
+        };
+        /** MetaLimits */
+        MetaLimits: {
+            /**
+             * Max Guests
+             * @default 16
+             */
+            max_guests: number;
+            /**
+             * Max Bedrooms
+             * @default 20
+             */
+            max_bedrooms: number;
+            /**
+             * Max Beds
+             * @default 30
+             */
+            max_beds: number;
+            /**
+             * Max Baths
+             * @default 20
+             */
+            max_baths: number;
+            /**
+             * Min Nightly Cents
+             * @default 1000
+             */
+            min_nightly_cents: number;
+            /**
+             * Min Nights
+             * @default 1
+             */
+            min_nights: number;
+            /**
+             * Max Nights
+             * @default 365
+             */
+            max_nights: number;
+            /**
+             * Max Advance Days
+             * @default 365
+             */
+            max_advance_days: number;
+        };
+        /** MetaResponse */
+        MetaResponse: {
+            /** Today */
+            today: string;
+            /** Categories */
+            categories: string[];
+            /** Property Types */
+            property_types: string[];
+            /** Room Types */
+            room_types: string[];
+            /** Amenities */
+            amenities: components["schemas"]["AmenityItem"][];
+            limits: components["schemas"]["MetaLimits"];
+        };
+        /** PhotoItem */
+        PhotoItem: {
+            /** Id */
+            id: number;
+            /** Url */
+            url: string;
+            /** Position */
+            position: number;
+            /** Alt */
+            alt?: string | null;
         };
         /** RegisterRequest */
         RegisterRequest: {
@@ -170,6 +684,63 @@ export interface components {
             email: string;
             /** Password */
             password: string;
+        };
+        /** ReviewAuthor */
+        ReviewAuthor: {
+            /** Id */
+            id: number;
+            /** Name */
+            name: string;
+            /** Avatar Url */
+            avatar_url?: string | null;
+        };
+        /** ReviewItem */
+        ReviewItem: {
+            /** Id */
+            id: number;
+            author: components["schemas"]["ReviewAuthor"];
+            /** Cleanliness */
+            cleanliness: number;
+            /** Accuracy */
+            accuracy: number;
+            /** Communication */
+            communication: number;
+            /** Location */
+            location: number;
+            /** Check In Rating */
+            check_in_rating: number;
+            /** Value */
+            value: number;
+            /** Rating */
+            rating: number;
+            /** Comment */
+            comment: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /** ReviewsListResponse */
+        ReviewsListResponse: {
+            /** Items */
+            items: components["schemas"]["ReviewItem"][];
+            summary: components["schemas"]["ReviewsSummary"];
+            /** Total */
+            total: number;
+            /** Has More */
+            has_more: boolean;
+        };
+        /** ReviewsSummary */
+        ReviewsSummary: {
+            /** Avg */
+            avg: number;
+            /** Count */
+            count: number;
+            /** Categories */
+            categories: {
+                [key: string]: number;
+            };
         };
         /** UpdateUserRequest */
         UpdateUserRequest: {
@@ -233,6 +804,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HealthResponse"];
+                };
+            };
+        };
+    };
+    get_system_metadata_api_meta_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MetaResponse"];
                 };
             };
         };
@@ -390,6 +981,375 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["UserResponse"];
+                };
+            };
+        };
+    };
+    get_search_suggestions_api_search_suggestions_get: {
+        parameters: {
+            query?: {
+                q?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DestinationSuggestion"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_listings_api_listings_get: {
+        parameters: {
+            query?: {
+                location?: string | null;
+                check_in?: string | null;
+                check_out?: string | null;
+                adults?: number;
+                children?: number;
+                infants?: number;
+                pets?: number;
+                category?: string | null;
+                room_types?: string[] | null;
+                property_types?: string[] | null;
+                min_price_cents?: number | null;
+                max_price_cents?: number | null;
+                min_bedrooms?: number | null;
+                min_beds?: number | null;
+                min_baths?: number | null;
+                amenity_ids?: number[] | null;
+                superhost?: boolean;
+                page?: number;
+                page_size?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListingListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_listings_count_api_listings_count_get: {
+        parameters: {
+            query?: {
+                location?: string | null;
+                check_in?: string | null;
+                check_out?: string | null;
+                adults?: number;
+                children?: number;
+                infants?: number;
+                pets?: number;
+                category?: string | null;
+                room_types?: string[] | null;
+                property_types?: string[] | null;
+                min_price_cents?: number | null;
+                max_price_cents?: number | null;
+                min_bedrooms?: number | null;
+                min_beds?: number | null;
+                min_baths?: number | null;
+                amenity_ids?: number[] | null;
+                superhost?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListingCountResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_facets_api_listings_facets_get: {
+        parameters: {
+            query?: {
+                location?: string | null;
+                check_in?: string | null;
+                check_out?: string | null;
+                adults?: number;
+                children?: number;
+                infants?: number;
+                pets?: number;
+                category?: string | null;
+                room_types?: string[] | null;
+                property_types?: string[] | null;
+                min_bedrooms?: number | null;
+                min_beds?: number | null;
+                min_baths?: number | null;
+                amenity_ids?: number[] | null;
+                superhost?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListingFacetsResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_listing_detail_api_listings__listing_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                listing_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListingDetailResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_availability_api_listings__listing_id__availability_get: {
+        parameters: {
+            query?: {
+                from?: string | null;
+                to?: string | null;
+            };
+            header?: never;
+            path: {
+                listing_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AvailabilityResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_listing_reviews_api_listings__listing_id__reviews_get: {
+        parameters: {
+            query?: {
+                page?: number;
+                page_size?: number;
+            };
+            header?: never;
+            path: {
+                listing_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewsListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_wishlist_api_wishlist_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListingCardResponse"][];
+                };
+            };
+        };
+    };
+    get_wishlist_ids_api_wishlist_ids_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": number[];
+                };
+            };
+        };
+    };
+    save_wishlist_item_api_wishlist__listing_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                listing_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_wishlist_item_api_wishlist__listing_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                listing_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

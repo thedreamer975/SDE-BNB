@@ -71,3 +71,51 @@ All non-2xx responses conform to:
 - `get_current_user(user: User = Depends(get_current_user_optional)) -> User`: Enforces authentication, raises `401 UNAUTHENTICATED`.
 - `require_host(user: User = Depends(get_current_user)) -> User`: Enforces host role, raises `403 FORBIDDEN`.
 
+## S3: Catalog API: Listings, Search, Availability, Wishlist
+
+### Endpoints
+| Method | Path | Auth | Request Shape / Params | Response Shape |
+|---|---|---|---|---|
+| `GET` | `/api/meta` | Public | None | `MetaResponse` (`{today, categories[], property_types[], room_types[], amenities[], limits}`) |
+| `GET` | `/api/search/suggestions` | Public | `q` (string query) | `list[DestinationSuggestion]` (`[{label, city, country, lat, lng}]`) |
+| `GET` | `/api/listings` | Optional | Query parameters (see mapping table below) | `ListingListResponse` (`{items[], total, page, page_size, has_more}`) |
+| `GET` | `/api/listings/count` | Public | Same filter query parameters | `ListingCountResponse` (`{total}`) |
+| `GET` | `/api/listings/facets` | Public | Same filter query parameters (excluding price) | `ListingFacetsResponse` (`{price_min, price_max, histogram[{from, to, count}]}`) |
+| `GET` | `/api/listings/{id}` | Optional | `id` (int path) | `ListingDetailResponse` (includes photos, amenities, host, rating, `saved`) |
+| `GET` | `/api/listings/{id}/availability` | Public | `from` (date), `to` (date) | `AvailabilityResponse` (`{booked:[{check_in, check_out}], min_nights, max_nights, max_advance_days}`) |
+| `GET` | `/api/listings/{id}/reviews` | Public | `page` (int), `page_size` (int) | `ReviewsListResponse` (`{items[], summary{avg, count, categories}, total, has_more}`) |
+| `GET` | `/api/wishlist` | Authenticated | None | `list[ListingCardResponse]` (`saved=true`) |
+| `GET` | `/api/wishlist/ids` | Authenticated | None | `list[int]` (array of saved listing IDs) |
+| `PUT` | `/api/wishlist/{id}` | Authenticated | `id` (int path) | `204 No Content` (idempotent add) |
+| `DELETE` | `/api/wishlist/{id}` | Authenticated | `id` (int path) | `204 No Content` (idempotent remove) |
+
+### Parameter Mapping Table (Frontend URL State ⇄ Backend API)
+| Frontend URL Param (S5) | Backend Query Param | Format / Constraint | Example |
+|---|---|---|---|
+| `location` | `location` | Substring match on city, country, title | `Goa` |
+| `checkIn` | `check_in` | `YYYY-MM-DD` string | `2026-11-05` |
+| `checkOut` | `check_out` | `YYYY-MM-DD` string (must be > check_in) | `2026-11-10` |
+| `adults` | `adults` | Integer >= 1 | `2` |
+| `children` | `children` | Integer >= 0 | `1` |
+| `infants` | `infants` | Integer >= 0 | `0` |
+| `pets` | `pets` | Integer >= 0 (requires `pets_allowed=1`) | `1` |
+| `category` | `category` | Exact category name | `Beachfront` |
+| `roomTypes` | `room_types` | Multi-value query param | `entire_home` |
+| `propertyTypes` | `property_types` | Multi-value query param | `Villa` |
+| `minPrice` | `min_price_cents` | Dollars in URL -> cents in query | `$50` -> `5000` |
+| `maxPrice` | `max_price_cents` | Dollars in URL -> cents in query | `$300` -> `30000` |
+| `bedrooms` | `min_bedrooms` | Integer >= | `2` |
+| `beds` | `min_beds` | Integer >= | `3` |
+| `baths` | `min_baths` | Float >= | `1.5` |
+| `amenities` | `amenity_ids` | Multi-value integer IDs (all-of match) | `1`, `3` |
+| `superhost` | `superhost` | Boolean `true` or `false` | `true` |
+| `page` | `page` | Integer (default 1) | `1` |
+| `pageSize` | `page_size` | Integer (default 20, max 40) | `20` |
+
+### Derived Listing Card Attributes
+- `guest_favorite`: Derived boolean, True when `rating_avg >= 4.8 AND rating_count >= 5`.
+- `saved`: Hydrated boolean, True when current authenticated user has listing in `wishlist_items`.
+- `is_superhost`: Denormalized boolean from host user record.
+- `photos`: First 5 photos sorted by position.
+
+

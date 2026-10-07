@@ -12,8 +12,11 @@ from app.core.limiter import limiter
 from app.db import init_db
 from app.errors import register_exception_handlers
 from app.routers.auth import router as auth_router
+from app.routers.catalog import router as catalog_router
 from app.routers.health import router as health_router
+from app.routers.meta import router as meta_router
 from app.routers.users import router as users_router
+from app.routers.wishlist import router as wishlist_router
 from seed.seed import seed_database
 
 settings = get_settings()
@@ -111,8 +114,11 @@ def create_app() -> FastAPI:
 
     # Include routers under /api
     app.include_router(health_router, prefix="/api")
+    app.include_router(meta_router, prefix="/api")
     app.include_router(auth_router, prefix="/api")
     app.include_router(users_router, prefix="/api")
+    app.include_router(catalog_router, prefix="/api")
+    app.include_router(wishlist_router, prefix="/api")
 
     return app
 
