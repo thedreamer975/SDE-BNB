@@ -12,8 +12,10 @@ from app.core.limiter import limiter
 from app.db import init_db
 from app.errors import register_exception_handlers
 from app.routers.auth import router as auth_router
+from app.routers.bookings import router as bookings_router
 from app.routers.catalog import router as catalog_router
 from app.routers.health import router as health_router
+from app.routers.host import router as host_router
 from app.routers.meta import router as meta_router
 from app.routers.users import router as users_router
 from app.routers.wishlist import router as wishlist_router
@@ -119,6 +121,8 @@ def create_app() -> FastAPI:
     app.include_router(users_router, prefix="/api")
     app.include_router(catalog_router, prefix="/api")
     app.include_router(wishlist_router, prefix="/api")
+    app.include_router(bookings_router, prefix="/api")
+    app.include_router(host_router, prefix="/api")
 
     return app
 
