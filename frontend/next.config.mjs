@@ -18,6 +18,10 @@ const nextConfig = {
         hostname: 'res.cloudinary.com',
       },
       {
+        protocol: 'https',
+        hostname: '**.up.railway.app',
+      },
+      {
         protocol: 'http',
         hostname: 'localhost',
         port: '8000',

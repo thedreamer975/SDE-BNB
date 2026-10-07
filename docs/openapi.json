@@ -1426,6 +1426,831 @@
           }
         }
       }
+    },
+    "/api/bookings/quote": {
+      "get": {
+        "tags": [
+          "Bookings"
+        ],
+        "summary": "Quote Booking",
+        "description": "Calculate price breakdown for given listing + dates.\nReturns 404 if listing not found, 409 if dates unavailable.",
+        "operationId": "quote_booking_api_bookings_quote_get",
+        "parameters": [
+          {
+            "name": "listing_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Listing Id"
+            }
+          },
+          {
+            "name": "check_in",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Check In"
+            }
+          },
+          {
+            "name": "check_out",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Check Out"
+            }
+          },
+          {
+            "name": "adults",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "title": "Adults"
+            }
+          },
+          {
+            "name": "children",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Children"
+            }
+          },
+          {
+            "name": "infants",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Infants"
+            }
+          },
+          {
+            "name": "pets",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Pets"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/bookings": {
+      "post": {
+        "tags": [
+          "Bookings"
+        ],
+        "summary": "Create Booking Endpoint",
+        "description": "Create a confirmed booking (authoritative pricing, overlap-safe transaction).",
+        "operationId": "create_booking_endpoint_api_bookings_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBookingRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Bookings"
+        ],
+        "summary": "List Bookings",
+        "description": "Get current user's bookings (guest view).",
+        "operationId": "list_bookings_api_bookings_get",
+        "parameters": [
+          {
+            "name": "tab",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^(all|upcoming|past)$",
+              "default": "all",
+              "title": "Tab"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BookingResponse"
+                  },
+                  "title": "Response List Bookings Api Bookings Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/bookings/{booking_id}": {
+      "get": {
+        "tags": [
+          "Bookings"
+        ],
+        "summary": "Get Booking",
+        "description": "Get single booking (guest or host of that listing).",
+        "operationId": "get_booking_api_bookings__booking_id__get",
+        "parameters": [
+          {
+            "name": "booking_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Booking Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/bookings/{booking_id}/cancel-preview": {
+      "get": {
+        "tags": [
+          "Bookings"
+        ],
+        "summary": "Preview Cancel",
+        "description": "Preview refund before cancelling.",
+        "operationId": "preview_cancel_api_bookings__booking_id__cancel_preview_get",
+        "parameters": [
+          {
+            "name": "booking_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Booking Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CancelPreviewResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/bookings/{booking_id}/cancel": {
+      "post": {
+        "tags": [
+          "Bookings"
+        ],
+        "summary": "Cancel Booking Endpoint",
+        "description": "Cancel a booking and process refund.",
+        "operationId": "cancel_booking_endpoint_api_bookings__booking_id__cancel_post",
+        "parameters": [
+          {
+            "name": "booking_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Booking Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/bookings/{booking_id}/review": {
+      "post": {
+        "tags": [
+          "Bookings"
+        ],
+        "summary": "Create Review Endpoint",
+        "description": "Submit a review for a completed stay.",
+        "operationId": "create_review_endpoint_api_bookings__booking_id__review_post",
+        "parameters": [
+          {
+            "name": "booking_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Booking Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateReviewRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/host/dashboard": {
+      "get": {
+        "tags": [
+          "Host"
+        ],
+        "summary": "Host Dashboard",
+        "description": "High-level metrics for the host's dashboard.",
+        "operationId": "host_dashboard_api_host_dashboard_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HostDashboardResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/host/listings": {
+      "get": {
+        "tags": [
+          "Host"
+        ],
+        "summary": "List Host Listings",
+        "description": "List all non-deleted listings owned by the current host.",
+        "operationId": "list_host_listings_api_host_listings_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/HostListingResponse"
+                  },
+                  "type": "array",
+                  "title": "Response List Host Listings Api Host Listings Get"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Host"
+        ],
+        "summary": "Create Host Listing",
+        "description": "Create a new listing.",
+        "operationId": "create_host_listing_api_host_listings_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateListingRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/host/listings/{listing_id}": {
+      "get": {
+        "tags": [
+          "Host"
+        ],
+        "summary": "Get Host Listing Endpoint",
+        "description": "Get a single host-owned listing.",
+        "operationId": "get_host_listing_endpoint_api_host_listings__listing_id__get",
+        "parameters": [
+          {
+            "name": "listing_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Listing Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HostListingResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Host"
+        ],
+        "summary": "Update Host Listing",
+        "description": "Full or partial update to a host-owned listing.",
+        "operationId": "update_host_listing_api_host_listings__listing_id__put",
+        "parameters": [
+          {
+            "name": "listing_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Listing Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateListingRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HostListingResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Host"
+        ],
+        "summary": "Delete Host Listing",
+        "description": "Soft-delete a listing (409 if upcoming bookings exist).",
+        "operationId": "delete_host_listing_api_host_listings__listing_id__delete",
+        "parameters": [
+          {
+            "name": "listing_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Listing Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/host/reservations": {
+      "get": {
+        "tags": [
+          "Host"
+        ],
+        "summary": "Host Reservations",
+        "description": "List all reservations across host's listings, optionally filtered.",
+        "operationId": "host_reservations_api_host_reservations_get",
+        "parameters": [
+          {
+            "name": "tab",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^(all|upcoming|past)$",
+              "default": "all",
+              "title": "Tab"
+            }
+          },
+          {
+            "name": "listing_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Listing Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/uploads": {
+      "post": {
+        "tags": [
+          "Host"
+        ],
+        "summary": "Upload Image",
+        "description": "Upload a listing photo. Validates via magic bytes (not just extension/MIME header).\nMax 5MB. Returns the URL path for use in listing creation.",
+        "operationId": "upload_image_api_uploads_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_image_api_uploads_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/notifications": {
+      "get": {
+        "tags": [
+          "Notifications"
+        ],
+        "summary": "List Notifications",
+        "description": "List user's notifications, newest first.",
+        "operationId": "list_notifications_api_notifications_get",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 20,
+              "title": "Page Size"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/notifications/unread-count": {
+      "get": {
+        "tags": [
+          "Notifications"
+        ],
+        "summary": "Get Unread Count",
+        "description": "Quick check of unread notification count for the bell badge.",
+        "operationId": "get_unread_count_api_notifications_unread_count_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/notifications/{notification_id}/read": {
+      "post": {
+        "tags": [
+          "Notifications"
+        ],
+        "summary": "Mark Notification Read",
+        "description": "Mark a single notification as read.",
+        "operationId": "mark_notification_read_api_notifications__notification_id__read_post",
+        "parameters": [
+          {
+            "name": "notification_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Notification Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/notifications/read-all": {
+      "post": {
+        "tags": [
+          "Notifications"
+        ],
+        "summary": "Mark All Read",
+        "description": "Mark all of the user's unread notifications as read.",
+        "operationId": "mark_all_read_api_notifications_read_all_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1489,6 +2314,20 @@
         ],
         "title": "AvailabilityResponse"
       },
+      "Body_upload_image_api_uploads_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_upload_image_api_uploads_post"
+      },
       "BookedRange": {
         "properties": {
           "check_in": {
@@ -1506,6 +2345,424 @@
           "check_out"
         ],
         "title": "BookedRange"
+      },
+      "BookingResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "listing_id": {
+            "type": "string",
+            "title": "Listing Id"
+          },
+          "listing_title": {
+            "type": "string",
+            "title": "Listing Title"
+          },
+          "listing_city": {
+            "type": "string",
+            "title": "Listing City"
+          },
+          "listing_country": {
+            "type": "string",
+            "title": "Listing Country"
+          },
+          "listing_photo": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Listing Photo"
+          },
+          "check_in": {
+            "type": "string",
+            "title": "Check In"
+          },
+          "check_out": {
+            "type": "string",
+            "title": "Check Out"
+          },
+          "adults": {
+            "type": "integer",
+            "title": "Adults"
+          },
+          "children": {
+            "type": "integer",
+            "title": "Children"
+          },
+          "infants": {
+            "type": "integer",
+            "title": "Infants"
+          },
+          "pets": {
+            "type": "integer",
+            "title": "Pets"
+          },
+          "nights": {
+            "type": "integer",
+            "title": "Nights"
+          },
+          "price_per_night": {
+            "type": "integer",
+            "title": "Price Per Night"
+          },
+          "nightly_total": {
+            "type": "integer",
+            "title": "Nightly Total"
+          },
+          "cleaning_fee": {
+            "type": "integer",
+            "title": "Cleaning Fee"
+          },
+          "service_fee": {
+            "type": "integer",
+            "title": "Service Fee"
+          },
+          "total_price": {
+            "type": "integer",
+            "title": "Total Price"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "payment_status": {
+            "type": "string",
+            "title": "Payment Status"
+          },
+          "refund_amount": {
+            "type": "integer",
+            "title": "Refund Amount"
+          },
+          "confirmation_code": {
+            "type": "string",
+            "title": "Confirmation Code"
+          },
+          "phase": {
+            "type": "string",
+            "title": "Phase"
+          },
+          "can_cancel": {
+            "type": "boolean",
+            "title": "Can Cancel"
+          },
+          "can_review": {
+            "type": "boolean",
+            "title": "Can Review"
+          },
+          "has_review": {
+            "type": "boolean",
+            "title": "Has Review"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At"
+          },
+          "cancelled_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cancelled At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "listing_id",
+          "listing_title",
+          "listing_city",
+          "listing_country",
+          "listing_photo",
+          "check_in",
+          "check_out",
+          "adults",
+          "children",
+          "infants",
+          "pets",
+          "nights",
+          "price_per_night",
+          "nightly_total",
+          "cleaning_fee",
+          "service_fee",
+          "total_price",
+          "status",
+          "payment_status",
+          "refund_amount",
+          "confirmation_code",
+          "phase",
+          "can_cancel",
+          "can_review",
+          "has_review",
+          "created_at",
+          "cancelled_at"
+        ],
+        "title": "BookingResponse"
+      },
+      "CancelPreviewResponse": {
+        "properties": {
+          "booking_id": {
+            "type": "string",
+            "title": "Booking Id"
+          },
+          "refund_amount": {
+            "type": "integer",
+            "title": "Refund Amount"
+          },
+          "refund_policy": {
+            "type": "string",
+            "title": "Refund Policy"
+          },
+          "nights_elapsed": {
+            "type": "integer",
+            "title": "Nights Elapsed"
+          },
+          "nights_total": {
+            "type": "integer",
+            "title": "Nights Total"
+          }
+        },
+        "type": "object",
+        "required": [
+          "booking_id",
+          "refund_amount",
+          "refund_policy",
+          "nights_elapsed",
+          "nights_total"
+        ],
+        "title": "CancelPreviewResponse"
+      },
+      "CreateBookingRequest": {
+        "properties": {
+          "listing_id": {
+            "type": "string",
+            "title": "Listing Id"
+          },
+          "check_in": {
+            "type": "string",
+            "title": "Check In"
+          },
+          "check_out": {
+            "type": "string",
+            "title": "Check Out"
+          },
+          "adults": {
+            "type": "integer",
+            "title": "Adults"
+          },
+          "children": {
+            "type": "integer",
+            "title": "Children",
+            "default": 0
+          },
+          "infants": {
+            "type": "integer",
+            "title": "Infants",
+            "default": 0
+          },
+          "pets": {
+            "type": "integer",
+            "title": "Pets",
+            "default": 0
+          },
+          "card_token": {
+            "type": "string",
+            "title": "Card Token"
+          }
+        },
+        "type": "object",
+        "required": [
+          "listing_id",
+          "check_in",
+          "check_out",
+          "adults",
+          "card_token"
+        ],
+        "title": "CreateBookingRequest"
+      },
+      "CreateListingRequest": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "property_type": {
+            "type": "string",
+            "title": "Property Type"
+          },
+          "room_type": {
+            "type": "string",
+            "title": "Room Type"
+          },
+          "address": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Address"
+          },
+          "city": {
+            "type": "string",
+            "title": "City"
+          },
+          "state": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "State"
+          },
+          "country": {
+            "type": "string",
+            "title": "Country"
+          },
+          "latitude": {
+            "type": "number",
+            "title": "Latitude"
+          },
+          "longitude": {
+            "type": "number",
+            "title": "Longitude"
+          },
+          "max_guests": {
+            "type": "integer",
+            "title": "Max Guests"
+          },
+          "bedrooms": {
+            "type": "integer",
+            "title": "Bedrooms"
+          },
+          "beds": {
+            "type": "integer",
+            "title": "Beds"
+          },
+          "baths": {
+            "type": "number",
+            "title": "Baths"
+          },
+          "pets_allowed": {
+            "type": "boolean",
+            "title": "Pets Allowed",
+            "default": false
+          },
+          "photos": {
+            "items": {
+              "$ref": "#/components/schemas/PhotoInput"
+            },
+            "type": "array",
+            "title": "Photos"
+          },
+          "amenity_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Amenity Ids"
+          },
+          "price_per_night": {
+            "type": "integer",
+            "title": "Price Per Night"
+          },
+          "cleaning_fee": {
+            "type": "integer",
+            "title": "Cleaning Fee",
+            "default": 0
+          },
+          "min_nights": {
+            "type": "integer",
+            "title": "Min Nights",
+            "default": 1
+          },
+          "max_nights": {
+            "type": "integer",
+            "title": "Max Nights",
+            "default": 30
+          },
+          "check_in_time": {
+            "type": "string",
+            "title": "Check In Time",
+            "default": "15:00"
+          },
+          "check_out_time": {
+            "type": "string",
+            "title": "Check Out Time",
+            "default": "11:00"
+          },
+          "house_rules": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "House Rules"
+          }
+        },
+        "type": "object",
+        "required": [
+          "title",
+          "description",
+          "category",
+          "property_type",
+          "room_type",
+          "city",
+          "country",
+          "latitude",
+          "longitude",
+          "max_guests",
+          "bedrooms",
+          "beds",
+          "baths",
+          "photos",
+          "amenity_ids",
+          "price_per_night"
+        ],
+        "title": "CreateListingRequest"
+      },
+      "CreateReviewRequest": {
+        "properties": {
+          "rating": {
+            "type": "integer",
+            "title": "Rating"
+          },
+          "comment": {
+            "type": "string",
+            "title": "Comment"
+          }
+        },
+        "type": "object",
+        "required": [
+          "rating",
+          "comment"
+        ],
+        "title": "CreateReviewRequest"
       },
       "DestinationSuggestion": {
         "properties": {
@@ -1612,6 +2869,115 @@
           "count"
         ],
         "title": "HistogramBucket"
+      },
+      "HostDashboardResponse": {
+        "properties": {
+          "checking_out": {
+            "type": "integer",
+            "title": "Checking Out"
+          },
+          "currently_hosting": {
+            "type": "integer",
+            "title": "Currently Hosting"
+          },
+          "arriving_soon": {
+            "type": "integer",
+            "title": "Arriving Soon"
+          },
+          "upcoming": {
+            "type": "integer",
+            "title": "Upcoming"
+          },
+          "total_listings": {
+            "type": "integer",
+            "title": "Total Listings"
+          },
+          "upcoming_bookings": {
+            "type": "integer",
+            "title": "Upcoming Bookings"
+          },
+          "revenue_30d": {
+            "type": "integer",
+            "title": "Revenue 30D"
+          },
+          "avg_rating": {
+            "type": "number",
+            "title": "Avg Rating"
+          }
+        },
+        "type": "object",
+        "required": [
+          "checking_out",
+          "currently_hosting",
+          "arriving_soon",
+          "upcoming",
+          "total_listings",
+          "upcoming_bookings",
+          "revenue_30d",
+          "avg_rating"
+        ],
+        "title": "HostDashboardResponse"
+      },
+      "HostListingResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "city": {
+            "type": "string",
+            "title": "City"
+          },
+          "country": {
+            "type": "string",
+            "title": "Country"
+          },
+          "price_per_night": {
+            "type": "integer",
+            "title": "Price Per Night"
+          },
+          "rating_avg": {
+            "type": "number",
+            "title": "Rating Avg"
+          },
+          "rating_count": {
+            "type": "integer",
+            "title": "Rating Count"
+          },
+          "photos": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Photos"
+          },
+          "upcoming_bookings": {
+            "type": "integer",
+            "title": "Upcoming Bookings"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "city",
+          "country",
+          "price_per_night",
+          "rating_avg",
+          "rating_count",
+          "photos",
+          "upcoming_bookings",
+          "is_active"
+        ],
+        "title": "HostListingResponse"
       },
       "HostSummary": {
         "properties": {
@@ -2135,6 +3501,35 @@
         ],
         "title": "MetaResponse"
       },
+      "PhotoInput": {
+        "properties": {
+          "url": {
+            "type": "string",
+            "title": "Url"
+          },
+          "position": {
+            "type": "integer",
+            "title": "Position"
+          },
+          "alt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alt"
+          }
+        },
+        "type": "object",
+        "required": [
+          "url",
+          "position"
+        ],
+        "title": "PhotoInput"
+      },
       "PhotoItem": {
         "properties": {
           "id": {
@@ -2168,6 +3563,64 @@
           "position"
         ],
         "title": "PhotoItem"
+      },
+      "QuoteResponse": {
+        "properties": {
+          "listing_id": {
+            "type": "string",
+            "title": "Listing Id"
+          },
+          "check_in": {
+            "type": "string",
+            "title": "Check In"
+          },
+          "check_out": {
+            "type": "string",
+            "title": "Check Out"
+          },
+          "nights": {
+            "type": "integer",
+            "title": "Nights"
+          },
+          "price_per_night": {
+            "type": "integer",
+            "title": "Price Per Night"
+          },
+          "nightly_total": {
+            "type": "integer",
+            "title": "Nightly Total"
+          },
+          "cleaning_fee": {
+            "type": "integer",
+            "title": "Cleaning Fee"
+          },
+          "service_fee": {
+            "type": "integer",
+            "title": "Service Fee"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "currency": {
+            "type": "string",
+            "title": "Currency",
+            "default": "USD"
+          }
+        },
+        "type": "object",
+        "required": [
+          "listing_id",
+          "check_in",
+          "check_out",
+          "nights",
+          "price_per_night",
+          "nightly_total",
+          "cleaning_fee",
+          "service_fee",
+          "total"
+        ],
+        "title": "QuoteResponse"
       },
       "RegisterRequest": {
         "properties": {
@@ -2342,6 +3795,294 @@
         ],
         "title": "ReviewsSummary"
       },
+      "UpdateListingRequest": {
+        "properties": {
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category"
+          },
+          "property_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Property Type"
+          },
+          "room_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Room Type"
+          },
+          "address": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Address"
+          },
+          "city": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "state": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "State"
+          },
+          "country": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Country"
+          },
+          "latitude": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latitude"
+          },
+          "longitude": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Longitude"
+          },
+          "max_guests": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Guests"
+          },
+          "bedrooms": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bedrooms"
+          },
+          "beds": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Beds"
+          },
+          "baths": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Baths"
+          },
+          "pets_allowed": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pets Allowed"
+          },
+          "photos": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/PhotoInput"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Photos"
+          },
+          "amenity_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Amenity Ids"
+          },
+          "price_per_night": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Price Per Night"
+          },
+          "cleaning_fee": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cleaning Fee"
+          },
+          "min_nights": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Nights"
+          },
+          "max_nights": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Nights"
+          },
+          "check_in_time": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Check In Time"
+          },
+          "check_out_time": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Check Out Time"
+          },
+          "house_rules": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "House Rules"
+          }
+        },
+        "type": "object",
+        "title": "UpdateListingRequest",
+        "description": "All fields optional for PATCH/PUT."
+      },
       "UpdateUserRequest": {
         "properties": {
           "name": {
@@ -2356,6 +4097,24 @@
           "name"
         ],
         "title": "UpdateUserRequest"
+      },
+      "UploadResponse": {
+        "properties": {
+          "url": {
+            "type": "string",
+            "title": "Url"
+          },
+          "filename": {
+            "type": "string",
+            "title": "Filename"
+          }
+        },
+        "type": "object",
+        "required": [
+          "url",
+          "filename"
+        ],
+        "title": "UploadResponse"
       },
       "UserResponse": {
         "properties": {

@@ -17,6 +17,7 @@ from app.routers.catalog import router as catalog_router
 from app.routers.health import router as health_router
 from app.routers.host import router as host_router
 from app.routers.meta import router as meta_router
+from app.routers.notifications import router as notifications_router
 from app.routers.users import router as users_router
 from app.routers.wishlist import router as wishlist_router
 from seed.seed import seed_database
@@ -123,6 +124,7 @@ def create_app() -> FastAPI:
     app.include_router(wishlist_router, prefix="/api")
     app.include_router(bookings_router, prefix="/api")
     app.include_router(host_router, prefix="/api")
+    app.include_router(notifications_router, prefix="/api")
 
     return app
 

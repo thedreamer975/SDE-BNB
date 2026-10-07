@@ -1,4 +1,4 @@
-﻿# Progress Log â€” Airbnb Clone
+# Progress Log â€” Airbnb Clone
 
 ## S0: Scaffold & Tooling
 - **Status:** PASS
@@ -140,3 +140,21 @@
 - **Fit with next segments:** 
   - S8 (User Profile & Trips UI) will handle the guest side of managing bookings made in S6.
 - **Known issues:** Geocoding is mocked, photo upload relies on users inputting existing URLs since a file upload service wasn't specified.
+
+## S8: Booking Engine + Host API (Backend)
+- **Status:** PASS
+- **Built:**
+  - `backend/app/schemas/bookings.py`: Pydantic schemas for quote, booking CRUD, cancel preview, and review creation
+  - `backend/app/schemas/host.py`: Pydantic schemas for host listing CRUD (create/update with full field validation)
+  - `backend/app/services/bookings.py`: Full booking service with BEGIN IMMEDIATE concurrency guard, authoritative pricing, overlap detection, mock payment, notifications, cancellation with refund policy, review creation with aggregate recomputation
+  - `backend/app/services/host.py`: Host listing CRUD with ownership checks, soft-delete with 409 guard, dashboard metrics, reservations query
+  - `backend/app/routers/bookings.py`: REST API for bookings quote, CRUD, cancel, review
+  - `backend/app/routers/host.py`: REST API for host dashboard, listings CRUD, reservations, file upload with magic-byte validation
+  - `backend/app/routers/notifications.py`: REST API for notifications list, unread count, mark-read, mark-all-read
+  - `frontend/app/trips/page.tsx`: Guest trips page with tabs and status badges
+  - `frontend/app/profile/page.tsx`: User profile settings page
+  - `frontend/app/wishlists/page.tsx`: Wishlists page with grid and empty state
+  - `backend/Dockerfile` & `frontend/Dockerfile`: Production multi-stage Dockerfiles for Railway deployment
+  - `docs/DEPLOYMENT.md`: Step-by-step Railway continuous deployment setup with persistent domain guarantees
+- **Tests:** Pytest 49 passed, Vitest 2 passed, Ruff/ESLint/TSC all clean.
+

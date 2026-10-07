@@ -39,6 +39,7 @@ settings = get_settings()
 # ─── Dashboard ────────────────────────────────────────────────────────────────
 
 @router.get("/host/dashboard", response_model=HostDashboardResponse)
+@router.get("/host/summary", response_model=HostDashboardResponse)
 def host_dashboard(db: DbDep, host: HostDep):
     """High-level metrics for the host's dashboard."""
     today_str = get_today()

@@ -367,6 +367,324 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/bookings/quote": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Quote Booking
+         * @description Calculate price breakdown for given listing + dates.
+         *     Returns 404 if listing not found, 409 if dates unavailable.
+         */
+        get: operations["quote_booking_api_bookings_quote_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bookings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Bookings
+         * @description Get current user's bookings (guest view).
+         */
+        get: operations["list_bookings_api_bookings_get"];
+        put?: never;
+        /**
+         * Create Booking Endpoint
+         * @description Create a confirmed booking (authoritative pricing, overlap-safe transaction).
+         */
+        post: operations["create_booking_endpoint_api_bookings_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bookings/{booking_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Booking
+         * @description Get single booking (guest or host of that listing).
+         */
+        get: operations["get_booking_api_bookings__booking_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bookings/{booking_id}/cancel-preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Preview Cancel
+         * @description Preview refund before cancelling.
+         */
+        get: operations["preview_cancel_api_bookings__booking_id__cancel_preview_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bookings/{booking_id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Cancel Booking Endpoint
+         * @description Cancel a booking and process refund.
+         */
+        post: operations["cancel_booking_endpoint_api_bookings__booking_id__cancel_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bookings/{booking_id}/review": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create Review Endpoint
+         * @description Submit a review for a completed stay.
+         */
+        post: operations["create_review_endpoint_api_bookings__booking_id__review_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/host/dashboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Host Dashboard
+         * @description High-level metrics for the host's dashboard.
+         */
+        get: operations["host_dashboard_api_host_dashboard_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/host/listings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Host Listings
+         * @description List all non-deleted listings owned by the current host.
+         */
+        get: operations["list_host_listings_api_host_listings_get"];
+        put?: never;
+        /**
+         * Create Host Listing
+         * @description Create a new listing.
+         */
+        post: operations["create_host_listing_api_host_listings_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/host/listings/{listing_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Host Listing Endpoint
+         * @description Get a single host-owned listing.
+         */
+        get: operations["get_host_listing_endpoint_api_host_listings__listing_id__get"];
+        /**
+         * Update Host Listing
+         * @description Full or partial update to a host-owned listing.
+         */
+        put: operations["update_host_listing_api_host_listings__listing_id__put"];
+        post?: never;
+        /**
+         * Delete Host Listing
+         * @description Soft-delete a listing (409 if upcoming bookings exist).
+         */
+        delete: operations["delete_host_listing_api_host_listings__listing_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/host/reservations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Host Reservations
+         * @description List all reservations across host's listings, optionally filtered.
+         */
+        get: operations["host_reservations_api_host_reservations_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/uploads": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Upload Image
+         * @description Upload a listing photo. Validates via magic bytes (not just extension/MIME header).
+         *     Max 5MB. Returns the URL path for use in listing creation.
+         */
+        post: operations["upload_image_api_uploads_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Notifications
+         * @description List user's notifications, newest first.
+         */
+        get: operations["list_notifications_api_notifications_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/unread-count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Unread Count
+         * @description Quick check of unread notification count for the bell badge.
+         */
+        get: operations["get_unread_count_api_notifications_unread_count_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/{notification_id}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Mark Notification Read
+         * @description Mark a single notification as read.
+         */
+        post: operations["mark_notification_read_api_notifications__notification_id__read_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/read-all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Mark All Read
+         * @description Mark all of the user's unread notifications as read.
+         */
+        post: operations["mark_all_read_api_notifications_read_all_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -393,12 +711,198 @@ export interface components {
             /** Max Advance Days */
             max_advance_days: number;
         };
+        /** Body_upload_image_api_uploads_post */
+        Body_upload_image_api_uploads_post: {
+            /**
+             * File
+             * Format: binary
+             */
+            file: string;
+        };
         /** BookedRange */
         BookedRange: {
             /** Check In */
             check_in: string;
             /** Check Out */
             check_out: string;
+        };
+        /** BookingResponse */
+        BookingResponse: {
+            /** Id */
+            id: string;
+            /** Listing Id */
+            listing_id: string;
+            /** Listing Title */
+            listing_title: string;
+            /** Listing City */
+            listing_city: string;
+            /** Listing Country */
+            listing_country: string;
+            /** Listing Photo */
+            listing_photo: string | null;
+            /** Check In */
+            check_in: string;
+            /** Check Out */
+            check_out: string;
+            /** Adults */
+            adults: number;
+            /** Children */
+            children: number;
+            /** Infants */
+            infants: number;
+            /** Pets */
+            pets: number;
+            /** Nights */
+            nights: number;
+            /** Price Per Night */
+            price_per_night: number;
+            /** Nightly Total */
+            nightly_total: number;
+            /** Cleaning Fee */
+            cleaning_fee: number;
+            /** Service Fee */
+            service_fee: number;
+            /** Total Price */
+            total_price: number;
+            /** Status */
+            status: string;
+            /** Payment Status */
+            payment_status: string;
+            /** Refund Amount */
+            refund_amount: number;
+            /** Confirmation Code */
+            confirmation_code: string;
+            /** Phase */
+            phase: string;
+            /** Can Cancel */
+            can_cancel: boolean;
+            /** Can Review */
+            can_review: boolean;
+            /** Has Review */
+            has_review: boolean;
+            /** Created At */
+            created_at: string;
+            /** Cancelled At */
+            cancelled_at: string | null;
+        };
+        /** CancelPreviewResponse */
+        CancelPreviewResponse: {
+            /** Booking Id */
+            booking_id: string;
+            /** Refund Amount */
+            refund_amount: number;
+            /** Refund Policy */
+            refund_policy: string;
+            /** Nights Elapsed */
+            nights_elapsed: number;
+            /** Nights Total */
+            nights_total: number;
+        };
+        /** CreateBookingRequest */
+        CreateBookingRequest: {
+            /** Listing Id */
+            listing_id: string;
+            /** Check In */
+            check_in: string;
+            /** Check Out */
+            check_out: string;
+            /** Adults */
+            adults: number;
+            /**
+             * Children
+             * @default 0
+             */
+            children: number;
+            /**
+             * Infants
+             * @default 0
+             */
+            infants: number;
+            /**
+             * Pets
+             * @default 0
+             */
+            pets: number;
+            /** Card Token */
+            card_token: string;
+        };
+        /** CreateListingRequest */
+        CreateListingRequest: {
+            /** Title */
+            title: string;
+            /** Description */
+            description: string;
+            /** Category */
+            category: string;
+            /** Property Type */
+            property_type: string;
+            /** Room Type */
+            room_type: string;
+            /** Address */
+            address?: string | null;
+            /** City */
+            city: string;
+            /** State */
+            state?: string | null;
+            /** Country */
+            country: string;
+            /** Latitude */
+            latitude: number;
+            /** Longitude */
+            longitude: number;
+            /** Max Guests */
+            max_guests: number;
+            /** Bedrooms */
+            bedrooms: number;
+            /** Beds */
+            beds: number;
+            /** Baths */
+            baths: number;
+            /**
+             * Pets Allowed
+             * @default false
+             */
+            pets_allowed: boolean;
+            /** Photos */
+            photos: components["schemas"]["PhotoInput"][];
+            /** Amenity Ids */
+            amenity_ids: number[];
+            /** Price Per Night */
+            price_per_night: number;
+            /**
+             * Cleaning Fee
+             * @default 0
+             */
+            cleaning_fee: number;
+            /**
+             * Min Nights
+             * @default 1
+             */
+            min_nights: number;
+            /**
+             * Max Nights
+             * @default 30
+             */
+            max_nights: number;
+            /**
+             * Check In Time
+             * @default 15:00
+             */
+            check_in_time: string;
+            /**
+             * Check Out Time
+             * @default 11:00
+             */
+            check_out_time: string;
+            /** House Rules */
+            house_rules?: string | null;
+        };
+        /** CreateReviewRequest */
+        CreateReviewRequest: {
+            /** Rating */
+            rating: number;
+            /** Comment */
+            comment: string;
         };
         /** DestinationSuggestion */
         DestinationSuggestion: {
@@ -431,6 +935,48 @@ export interface components {
             to: number;
             /** Count */
             count: number;
+        };
+        /** HostDashboardResponse */
+        HostDashboardResponse: {
+            /** Checking Out */
+            checking_out: number;
+            /** Currently Hosting */
+            currently_hosting: number;
+            /** Arriving Soon */
+            arriving_soon: number;
+            /** Upcoming */
+            upcoming: number;
+            /** Total Listings */
+            total_listings: number;
+            /** Upcoming Bookings */
+            upcoming_bookings: number;
+            /** Revenue 30D */
+            revenue_30d: number;
+            /** Avg Rating */
+            avg_rating: number;
+        };
+        /** HostListingResponse */
+        HostListingResponse: {
+            /** Id */
+            id: string;
+            /** Title */
+            title: string;
+            /** City */
+            city: string;
+            /** Country */
+            country: string;
+            /** Price Per Night */
+            price_per_night: number;
+            /** Rating Avg */
+            rating_avg: number;
+            /** Rating Count */
+            rating_count: number;
+            /** Photos */
+            photos: string[];
+            /** Upcoming Bookings */
+            upcoming_bookings: number;
+            /** Is Active */
+            is_active: boolean;
         };
         /** HostSummary */
         HostSummary: {
@@ -665,6 +1211,15 @@ export interface components {
             amenities: components["schemas"]["AmenityItem"][];
             limits: components["schemas"]["MetaLimits"];
         };
+        /** PhotoInput */
+        PhotoInput: {
+            /** Url */
+            url: string;
+            /** Position */
+            position: number;
+            /** Alt */
+            alt?: string | null;
+        };
         /** PhotoItem */
         PhotoItem: {
             /** Id */
@@ -675,6 +1230,32 @@ export interface components {
             position: number;
             /** Alt */
             alt?: string | null;
+        };
+        /** QuoteResponse */
+        QuoteResponse: {
+            /** Listing Id */
+            listing_id: string;
+            /** Check In */
+            check_in: string;
+            /** Check Out */
+            check_out: string;
+            /** Nights */
+            nights: number;
+            /** Price Per Night */
+            price_per_night: number;
+            /** Nightly Total */
+            nightly_total: number;
+            /** Cleaning Fee */
+            cleaning_fee: number;
+            /** Service Fee */
+            service_fee: number;
+            /** Total */
+            total: number;
+            /**
+             * Currency
+             * @default USD
+             */
+            currency: string;
         };
         /** RegisterRequest */
         RegisterRequest: {
@@ -742,10 +1323,73 @@ export interface components {
                 [key: string]: number;
             };
         };
+        /**
+         * UpdateListingRequest
+         * @description All fields optional for PATCH/PUT.
+         */
+        UpdateListingRequest: {
+            /** Title */
+            title?: string | null;
+            /** Description */
+            description?: string | null;
+            /** Category */
+            category?: string | null;
+            /** Property Type */
+            property_type?: string | null;
+            /** Room Type */
+            room_type?: string | null;
+            /** Address */
+            address?: string | null;
+            /** City */
+            city?: string | null;
+            /** State */
+            state?: string | null;
+            /** Country */
+            country?: string | null;
+            /** Latitude */
+            latitude?: number | null;
+            /** Longitude */
+            longitude?: number | null;
+            /** Max Guests */
+            max_guests?: number | null;
+            /** Bedrooms */
+            bedrooms?: number | null;
+            /** Beds */
+            beds?: number | null;
+            /** Baths */
+            baths?: number | null;
+            /** Pets Allowed */
+            pets_allowed?: boolean | null;
+            /** Photos */
+            photos?: components["schemas"]["PhotoInput"][] | null;
+            /** Amenity Ids */
+            amenity_ids?: number[] | null;
+            /** Price Per Night */
+            price_per_night?: number | null;
+            /** Cleaning Fee */
+            cleaning_fee?: number | null;
+            /** Min Nights */
+            min_nights?: number | null;
+            /** Max Nights */
+            max_nights?: number | null;
+            /** Check In Time */
+            check_in_time?: string | null;
+            /** Check Out Time */
+            check_out_time?: string | null;
+            /** House Rules */
+            house_rules?: string | null;
+        };
         /** UpdateUserRequest */
         UpdateUserRequest: {
             /** Name */
             name: string;
+        };
+        /** UploadResponse */
+        UploadResponse: {
+            /** Url */
+            url: string;
+            /** Filename */
+            filename: string;
         };
         /** UserResponse */
         UserResponse: {
@@ -1350,6 +1994,571 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    quote_booking_api_bookings_quote_get: {
+        parameters: {
+            query: {
+                listing_id: string;
+                check_in: string;
+                check_out: string;
+                adults?: number;
+                children?: number;
+                infants?: number;
+                pets?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuoteResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_bookings_api_bookings_get: {
+        parameters: {
+            query?: {
+                tab?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BookingResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_booking_endpoint_api_bookings_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateBookingRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BookingResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_booking_api_bookings__booking_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                booking_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BookingResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    preview_cancel_api_bookings__booking_id__cancel_preview_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                booking_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CancelPreviewResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    cancel_booking_endpoint_api_bookings__booking_id__cancel_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                booking_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BookingResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_review_endpoint_api_bookings__booking_id__review_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                booking_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateReviewRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    host_dashboard_api_host_dashboard_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HostDashboardResponse"];
+                };
+            };
+        };
+    };
+    list_host_listings_api_host_listings_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HostListingResponse"][];
+                };
+            };
+        };
+    };
+    create_host_listing_api_host_listings_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateListingRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_host_listing_endpoint_api_host_listings__listing_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                listing_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HostListingResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_host_listing_api_host_listings__listing_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                listing_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateListingRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HostListingResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_host_listing_api_host_listings__listing_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                listing_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    host_reservations_api_host_reservations_get: {
+        parameters: {
+            query?: {
+                tab?: string;
+                listing_id?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    upload_image_api_uploads_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_upload_image_api_uploads_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UploadResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_notifications_api_notifications_get: {
+        parameters: {
+            query?: {
+                page?: number;
+                page_size?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_unread_count_api_notifications_unread_count_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    mark_notification_read_api_notifications__notification_id__read_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                notification_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    mark_all_read_api_notifications_read_all_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
                 };
             };
         };

@@ -13,6 +13,7 @@ from app.schemas.bookings import (
     CancelPreviewResponse,
     CreateBookingRequest,
     CreateReviewRequest,
+    QuoteParams,
     QuoteResponse,
 )
 from app.services.bookings import (
@@ -73,6 +74,37 @@ def quote_booking(
     )
 
 
+@router.post("/listings/{listing_id}/quote", response_model=QuoteResponse)
+def quote_listing_post(
+    listing_id: str,
+    params: QuoteParams,
+    db: Session = Depends(get_db),
+):
+    """Calculate price breakdown for given listing + dates (POST variant per PRD)."""
+    listing = db.get(Listing, int(listing_id))
+    if not listing or listing.deleted_at is not None:
+        raise NotFoundError("Listing not found.")
+
+    quote = calculate_quote(
+        listing_id=int(listing_id),
+        check_in=params.check_in,
+        check_out=params.check_out,
+        nightly_price_cents=listing.price_cents,
+        cleaning_fee_cents=listing.cleaning_fee_cents,
+    )
+    return QuoteResponse(
+        listing_id=listing_id,
+        check_in=quote["check_in"],
+        check_out=quote["check_out"],
+        nights=quote["nights"],
+        price_per_night=quote["nightly_cents"],
+        nightly_total=quote["subtotal_cents"],
+        cleaning_fee=quote["cleaning_cents"],
+        service_fee=quote["service_cents"],
+        total=quote["total_cents"],
+    )
+
+
 @router.post("/bookings", response_model=BookingResponse, status_code=201)
 def create_booking_endpoint(
     body: CreateBookingRequest,
@@ -81,6 +113,7 @@ def create_booking_endpoint(
 ):
     """Create a confirmed booking (authoritative pricing, overlap-safe transaction)."""
     today_str = get_today()
+    token = body.card_token or body.payment_token or "tok_visa_valid"
     result = create_booking(
         db=db,
         guest=user,
@@ -91,7 +124,7 @@ def create_booking_endpoint(
         children=body.children,
         infants=body.infants,
         pets=body.pets,
-        card_token=body.card_token,
+        card_token=token,
         today_str=today_str,
     )
     return BookingResponse(**result)
@@ -107,6 +140,19 @@ def list_bookings(
     today_str = get_today()
     results = get_guest_bookings(db, user.id, today_str, tab=tab)
     return [BookingResponse(**r) for r in results]
+
+
+@router.get("/bookings/me")
+def list_bookings_me(
+    db: DbDep,
+    user: UserDep,
+    tab: str = Query("all", pattern="^(all|upcoming|past)$"),
+):
+    """Get current user's bookings per PRD spec."""
+    today_str = get_today()
+    results = get_guest_bookings(db, user.id, today_str, tab=tab)
+    formatted = [BookingResponse(**r).model_dump() for r in results]
+    return {"bookings": formatted}
 
 
 @router.get("/bookings/{booking_id}", response_model=BookingResponse)

@@ -6,10 +6,10 @@ from pydantic import BaseModel, field_validator
 
 
 class QuoteParams(BaseModel):
-    listing_id: str
+    listing_id: Optional[str] = None
     check_in: str
     check_out: str
-    adults: int
+    adults: int = 1
     children: int = 0
     infants: int = 0
     pets: int = 0
@@ -29,14 +29,15 @@ class QuoteResponse(BaseModel):
 
 
 class CreateBookingRequest(BaseModel):
-    listing_id: str
+    listing_id: str | int
     check_in: str
     check_out: str
     adults: int
     children: int = 0
     infants: int = 0
     pets: int = 0
-    card_token: str
+    card_token: Optional[str] = None
+    payment_token: Optional[str] = None
 
     @field_validator("adults")
     @classmethod
