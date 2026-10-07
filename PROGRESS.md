@@ -115,3 +115,16 @@
 - **Tests:** Pytest 46 passed, Vitest 2 passed, ESLint and TSC clean.
 - **Fit with next segments:** S6 (Bookings / Rooms) will take over when a user clicks on a `ListingCard`.
 - **Known issues:** None.
+
+## S6: Bookings & Rooms UI (Listing Details & Booking Widget)
+- **Status:** PASS
+- **Built:**
+  - `app/rooms/[id]/page.tsx`: Server component scaffold handling basic layout and dynamic metadata generation for SEO.
+  - `app/rooms/[id]/RoomDetailClient.tsx`: Main orchestrator displaying host information, description, amenities (with modal). Incorporates wishlist functionality via SWR.
+  - `components/room/PhotoGrid.tsx`: Hero photo grid mimicking Airbnb's layout with "Show all photos" responsive modal.
+  - `components/room/BookingWidget.tsx`: Sticky right-side panel with dynamic pricing calculation via `listings.quote()`, integrating natively typed inputs for check-in/out and guests. Navigates to /book/[id] on Reserve.
+  - `components/room/ReviewSection.tsx`: Displays average rating, category scores, and top 6 reviews, with a modal for paginated full review history using `swr`.
+- **Tests:** Pytest 46 passed, Vitest 2 passed, ESLint and TSC clean.
+- **Fit with next segments:**
+  - S7 (Host Dashboard) is the next functional segment for creating/managing listings.
+- **Known issues:** Native date inputs used as an acceptable fallback instead of a full external calendar dependency, relying on backend 409/422 validation for booked dates.
